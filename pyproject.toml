@@ -1,0 +1,53 @@
+[tool.isort]
+known_third_party = ["django"]
+combine_as_imports = true
+default_section = "THIRDPARTY"
+include_trailing_comma = true
+line_length = 79
+multi_line_output = 3
+known_first_party = "streed_food_api"
+known_django = "django"
+sections = "FUTURE,STDLIB,DJANGO,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
+
+[tool.black]
+line-length = 79
+include = '\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.mypy_cache
+  | \.venv
+  | _build
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "streed_food_api.conf.settings.tests"
+addopts = "-rsxX -l --strict -p no:warnings"
+xfail_strict = true
+python_paths = "streed_food_api"
+testpaths = "tests"
+
+[tool.poetry]
+name = "streed_food_api"
+version = "0.1.0"
+description = ""
+authors = ["Adam Szustak <madasz@onet.eu>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+Django = "^3.1.5"
+django-rest-framework = "^0.1.0"
+psycopg2 = "^2.8.6"
+
+[tool.poetry.dev-dependencies]
+django-debug-toolbar = "^3.2"
+pre-commit = "^2.9.3"
+pytest-pythonpath = "^0.7.3"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
