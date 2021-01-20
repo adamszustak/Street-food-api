@@ -27,7 +27,10 @@ SECRET_KEY = get_secret("SECRET_KEY")
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
+    "trucks",
+    "users",
     "rest_framework",
+    "phonenumber_field",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -103,3 +106,8 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
+
+AUTH_USER_MODEL = "users.User"
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = os.path.join(MAIN_DIR, "media")
