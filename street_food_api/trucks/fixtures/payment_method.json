@@ -1,0 +1,30 @@
+[
+{
+  "model": "trucks.paymentmethod",
+  "pk": 1,
+  "fields": {
+    "payment_name": "Credit Card"
+  }
+},
+{
+  "model": "trucks.paymentmethod",
+  "pk": 2,
+  "fields": {
+    "payment_name": "Debit Card"
+  }
+},
+{
+  "model": "trucks.paymentmethod",
+  "pk": 3,
+  "fields": {
+    "payment_name": "Cash"
+  }
+},
+{
+  "model": "trucks.paymentmethod",
+  "pk": 4,
+  "fields": {
+    "payment_name": "By Phone"
+  }
+}
+]
