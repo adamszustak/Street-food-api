@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from locations.serializers import LocationSerializer
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -12,11 +13,14 @@ class TruckViewSet(viewsets.ModelViewSet):
     queryset = Truck.confirmed.all()
     serializer_class = TruckSerializer
 
+    def _get_images(self, request):
+        for img in request.data.getlist("image"):
+            image_serializer = TruckImageSerializer(data={"image": img})
+            image_serializer.is_valid(raise_exception=True)
+
     def create(self, request, *args, **kwargs):
         if request.data.get("image"):
-            for img in request.data.getlist("image"):
-                image_serializer = TruckImageSerializer(data={"image": img})
-                image_serializer.is_valid(raise_exception=True)
+            self._get_images(request)
         return super(TruckViewSet, self).create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
@@ -24,7 +28,17 @@ class TruckViewSet(viewsets.ModelViewSet):
 
     def update(self, request, *args, **kwargs):
         if request.data.get("image"):
-            for img in request.data.getlist("image"):
-                image_serializer = TruckImageSerializer(data={"image": img})
-                image_serializer.is_valid(raise_exception=True)
+            self._get_images(request)
         return super(TruckViewSet, self).update(request, *args, **kwargs)
+
+    # @action(detail=True, methods=['post', 'patch', 'put'])
+    # def location(self, request, pk=None):
+    #     truck = self.get_object()
+    #     serializer = LocationSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         if request.method == 'POST':
+    #             serializer.save(city=truck.city, truck=truck)
+    #         else:
+    #             serializer.save()
+    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

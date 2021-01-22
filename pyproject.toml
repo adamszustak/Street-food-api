@@ -1,5 +1,5 @@
 [tool.isort]
-known_third_party = ["conf", "django", "phonenumber_field", "rest_framework", "trucks"]
+known_third_party = ["conf", "django", "locations", "phonenumber_field", "rest_framework", "trucks"]
 combine_as_imports = true
 default_section = "THIRDPARTY"
 include_trailing_comma = true
