@@ -20,6 +20,7 @@ class Truck(models.Model):
     name = models.CharField(_("Name"), max_length=50)
     phone = PhoneNumberField(_("Phone"), blank=True, max_length=50)
     email = models.EmailField(_("Email"), blank=True, max_length=50)
+    city = models.CharField(_("City"), max_length=70)
     facebook = models.CharField(_("Facebook"), blank=True, max_length=50)
     instagram = models.CharField(_("Instagram"), blank=True, max_length=50)
     page_url = models.URLField(_("Page URL"), blank=True, max_length=200)

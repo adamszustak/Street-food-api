@@ -27,8 +27,9 @@ SECRET_KEY = get_secret("SECRET_KEY")
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
-    "trucks",
-    "users",
+    "trucks.apps.TrucksConfig",
+    "users.apps.UsersConfig",
+    "locations.apps.LocationsConfig",
     "rest_framework",
     "phonenumber_field",
     "django.contrib.admin",

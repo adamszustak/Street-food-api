@@ -16,6 +16,7 @@ class TruckImageSerializer(serializers.ModelSerializer):
 
 
 class TruckSerializer(serializers.ModelSerializer):
+    location = serializers.PrimaryKeyRelatedField(read_only=True,)
     owner = serializers.PrimaryKeyRelatedField(read_only=True,)
     name = serializers.CharField(
         max_length=50,
@@ -41,6 +42,7 @@ class TruckSerializer(serializers.ModelSerializer):
             "payment_methods",
             "images",
             "updated",
+            "location",
         )
 
     def create(self, validated_data):
