@@ -15,6 +15,10 @@ The project uses PostgreSQL as default database.
     - [Get all trucks](#get-all-trucks)
     - [Get a single truck](#get-a-single-truck)
   - [For Truck Owners](#for-truck-owners)
+    - [Create a new Truck](#create-a-new-truck)
+    - [Update a Truck](#update-a-truck)
+    - [Delete a Truck](#delete-a-truck)
+    - [Create Location for Truck](#create-location-for-truck)
 
 ## Technologies/libraries used
 
@@ -61,8 +65,8 @@ The basic user can only list objects and retrieve a single object. A user added 
 
 Endpoint |HTTP Method | CRUD Method | Result | Info
 -- | -- |-- |-- |--
-`trucks/` | GET | READ | Get all trucks | Details
-`trucks/:id/` | GET | READ | Get a single truck | Details
+`trucks/` | GET | READ | Get all trucks | [Details](#get-all-trucks)
+`trucks/:id/` | GET | READ | Get a single truck | [Details](#get-a-single-truck)
 
 #### Get all trucks
 
@@ -172,7 +176,131 @@ GET http://127.0.0.1:8000/api/trucks/1/
 
 Endpoint |HTTP Method | CRUD Method | Result | Info
 -- | -- |-- |-- |--
-`trucks/`| POST | CREATE | Create a new Truck | Details
-`trucks/:id/` | PUT & PATCH | UPDATE | Update a Truck | Details
-`trucks/:id/` | DELETE | DELETE | Delete a Truck | Details
-`trucks/:id/location/` | POST | CREATE | Create Location for Truck | Details
+`trucks/`| POST | CREATE | Create a new Truck | [Details](#create-a-new-truck)
+`trucks/:id/` | PUT & PATCH | UPDATE | Update a Truck | [Details](#update-a-truck)
+`trucks/:id/` | DELETE | DELETE | Delete a Truck | [Details](#delete-a-truck)
+`trucks/:id/location/` | POST | CREATE | Create Location for Truck | [Details](#create-location-for-truck)
+
+#### Create a new Truck
+
+Creates a new Truck and returns the newly-created object. It requires **multipart/form-data** encoding!
+The owner is added automatically when the object is saved as well as slug field.
+Before the Truck is available to readers, it has to be approved by the administrator.
+Creation and update dates are added automatically.
+
+* multipart/form-data body parameters
+
+Field | Data Type | Required | Description
+--- | --- | --- | ---
+name | string | Y | Food Truck name
+phone | string | N | Phone Number accepted in international format (e.g '+41524204242')
+email | string | N | Email address (e.g 'aszustak@onet.pl')
+city | string | N | City where Food Truck is mainly placed (e.g 'Warsaw')
+facebook | string | N | Facebook address
+instagram | string | N | Instagram address
+page_url | string | N | Truck website (e.g 'https://www.uczsieit.pl')
+description | string | Y | Short description of the Truck (max length is 200 chars)
+payment | string | N | Option available: cash, credit card, debit card, by phone. Must be separated by commas
+image | field | N | Truck images, if more than 1 add each photo as a separate image keyword!
+
+#### Example
+
+* Request
+
+```
+POST http://127.0.0.1:8000/api/trucks/
+```
+
+* Request Body
+
+```
+{
+    "name": "HavenHam",
+    "phone": "+41333444111",
+    "email": "aszustak@onet.pl",
+    "facebook": "haven-ham",
+    "instagram": "#haven-ham",
+    "city": "Warsaw",
+    "page_url": "http://www.uczsieit.pl",
+    "description": "The best ham even!",
+    "payment": "Credit card, Cash",
+    "image": ImageField,
+    "image": ImageField
+}
+```
+
+* Response
+
+```
+{
+    "id": 1,
+    "owner": 1,
+    "name": "HavenHam",
+    "phone": "+41333444111",
+    "email": "aszustak@onet.pl",
+    "facebook": "haven-ham",
+    "instagram": "#haven-ham",
+    "page_url": "http://www.uczsieit.pl",
+    "description": "The best ham even!",
+    "payment_methods": [
+        "Credit Card",
+        "Debit Card",
+        "Cash"
+    ],
+    "images": [
+        "/media/uploads/HavenHam/main/comment_5j8RRZ3TGHIv7H49agXdukUOFNLPt565.jpg",
+        "/media/uploads/HavenHam/main/comment_2.jpg"
+    ],
+    "updated": "2021-01-20T07:11:35.066727Z",
+}
+```
+
+#### Update a Truck
+
+Return a single Truck.
+
+#### Example
+
+* Request
+
+```
+
+```
+
+* Response
+
+```
+```
+
+#### Delete a Truck
+
+Return a single Truck.
+
+#### Example
+
+* Request
+
+```
+
+```
+
+* Response
+
+```
+```
+
+#### Create Location for Truck
+
+Return a single Truck.
+
+#### Example
+
+* Request
+
+```
+```
+
+* Response
+
+```
+```
