@@ -31,14 +31,11 @@ class TruckViewSet(viewsets.ModelViewSet):
             self._get_images(request)
         return super(TruckViewSet, self).update(request, *args, **kwargs)
 
-    # @action(detail=True, methods=['post', 'patch', 'put'])
-    # def location(self, request, pk=None):
-    #     truck = self.get_object()
-    #     serializer = LocationSerializer(data=request.data)
-    #     if serializer.is_valid():
-    #         if request.method == 'POST':
-    #             serializer.save(city=truck.city, truck=truck)
-    #         else:
-    #             serializer.save()
-    #         return Response(serializer.data, status=status.HTTP_201_CREATED)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    @action(detail=True, methods=["post"])
+    def location(self, request, pk=None):
+        truck = self.get_object()
+        serializer = LocationSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(city=truck.city, truck=truck)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
