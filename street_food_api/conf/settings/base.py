@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     "locations.apps.LocationsConfig",
     "rest_framework",
     "phonenumber_field",
+    "django_filters",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -116,3 +117,8 @@ MEDIA_ROOT = os.path.join(MAIN_DIR, "media")
 
 # max upload img by user = 2mb
 MAX_IMG_SIZE = 2100000
+
+REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10,
+}

@@ -1,17 +1,22 @@
 from django.contrib.auth import get_user_model
 from locations.serializers import LocationSerializer
-from rest_framework import status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
 from .models import PaymentMethod, Truck
+from .permissions import IsOwnerOrReadOnly
 from .serializers import TruckImageSerializer, TruckSerializer
 
 
 class TruckViewSet(viewsets.ModelViewSet):
     queryset = Truck.confirmed.all()
     serializer_class = TruckSerializer
+    permission_classes = (
+        permissions.DjangoModelPermissions,
+        IsOwnerOrReadOnly,
+    )
 
     def _get_images(self, request):
         for img in request.data.getlist("image"):
@@ -24,7 +29,7 @@ class TruckViewSet(viewsets.ModelViewSet):
         return super(TruckViewSet, self).create(request, *args, **kwargs)
 
     def perform_create(self, serializer):
-        serializer.save(owner=get_user_model().objects.get(id=1))
+        serializer.save(owner=self.request.user)
 
     def update(self, request, *args, **kwargs):
         if request.data.get("image"):

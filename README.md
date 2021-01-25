@@ -1,1 +1,1 @@
-## Street food API
+## Street food
