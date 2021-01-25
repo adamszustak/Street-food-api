@@ -5,6 +5,15 @@
 Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential future customers. 
 The project uses PostgreSQL as default database.
 
+## Table of Contents
+- [Technologies/libraries](#technologieslibraries-used)
+  - [Additional libraries](#additional-libraries-used-to-make-sure-the-code-meets-all-necessary-conventions)
+- [Installation](#installation)
+- [Authentication & Permissions](#authentication&permissions)
+- [Structure](#structure)
+  - [For Basic Users](#for-basic-users)
+  - [For Truck Owners](#for-truck-owners)
+
 ## Technologies/libraries used
 
 - Python 3.7
@@ -30,7 +39,7 @@ git clone https://github.com/ImustAdmit/Street-food-api.git
 
 To make the project work on your local machine you need to install [poetry](https://python-poetry.org/docs/#installation) firstly or extract necessary dependencies to the new file.
 
-```python
+```
 # with Poetry
 poetry install
 
@@ -60,4 +69,4 @@ Endpoint |HTTP Method | CRUD Method | Result
 `trucks/`| POST | CREATE | Create a new Truck
 `trucks/:id/` | PUT & PATCH | UPDATE | Update a Truck
 `trucks/:id/` | DELETE | DELETE | Delete a Truck
-`trucks/:id/location/` | POST | Create | Create Location for Truck
+`trucks/:id/location/` | POST | CREATE | Create Location for Truck
