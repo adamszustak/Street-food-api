@@ -80,7 +80,7 @@ Return a list of all accepted by administrators Trucks
 GET http://127.0.0.1:8000/api/trucks/
 ```
 
-* Response
+* Response (status: 200 OK)
 
 ```
 "results": [
@@ -147,7 +147,7 @@ Return a single Truck.
 GET http://127.0.0.1:8000/api/trucks/1/
 ```
 
-* Response
+* Response (status: 200 OK)
 
 ```
 {
@@ -183,7 +183,7 @@ Endpoint |HTTP Method | CRUD Method | Result | Info
 
 #### Create a new Truck
 
-Creates a new Truck and returns the newly-created object. It requires **multipart/form-data** encoding!
+Creates a new Truck and returns the newly-created object. Requires **multipart / form-data** encoding when body includes **images**.
 The owner is added automatically when the object is saved as well as slug field.
 Before the Truck is available to readers, it has to be approved by the administrator.
 Creation and update dates are added automatically.
@@ -201,7 +201,7 @@ instagram | string | N | Instagram address
 page_url | string | N | Truck website (e.g 'https://www.uczsieit.pl')
 description | string | Y | Short description of the Truck (max length is 200 chars)
 payment | string | N | Option available: cash, credit card, debit card, by phone. Must be separated by commas
-image | field | N | Truck images, if more than 1 add each photo as a separate image keyword!
+image | field | N | Truck images, if more than 1 add each photo as a separate image keyword! Max size is 2MB.
 
 #### Example
 
@@ -229,7 +229,7 @@ POST http://127.0.0.1:8000/api/trucks/
 }
 ```
 
-* Response
+* Response (status: 201 CREATED)
 
 ```
 {
@@ -257,50 +257,79 @@ POST http://127.0.0.1:8000/api/trucks/
 
 #### Update a Truck
 
-Return a single Truck.
+Updates a Truck and returns the updated object. It needs to be done by owner/creator of an object.
+**Note**: If an image is sent all previous images will be removed and new images will be associated. The same goes for the payment methods in case of PUT method or PATCH when `payment` is provided. When PATCH without `payment` keyword, old `payment` instances remain.
+Requires **multipart / form-data** encoding when body includes **images**.
 
 #### Example
 
 * Request
 
 ```
-
+PUT/PATCH http://127.0.0.1:8000/api/trucks/12/
 ```
 
-* Response
-
-```
-```
+* Response (status: 200 OK)
 
 #### Delete a Truck
 
-Return a single Truck.
+Delete a Truck.
 
 #### Example
 
 * Request
 
 ```
-
+DELETE http://127.0.0.1:8000/api/trucks/12/
 ```
 
-* Response
-
-```
-```
+* Response (status: 204 NO CONTENT)
 
 #### Create Location for Truck
 
-Return a single Truck.
+Creates a new Location and returns the newly-created object. One Truck can has only one Location! When POST, old Location is removed and replaced by new Location.
 
 #### Example
+
+* JSON body parameters
+
+Field | Data Type | Required | Description
+--- | --- | --- | ---
+street | string | Y | Street where Truck is located (e.g 'Mazowiecka 12')
+zip_code | string | Y | Zip Code in format XX-XXX (e.g '03-333')
+longitude | float | N | Location (range: -180 to 180) -90 to 90
+latitude | float | N | Location (range: -90 to 90)
+open_from | string | N | Opening time in format %H:%M
+closed_at | string | N | Closing time in format %H:%M
 
 * Request
 
 ```
+POST http://127.0.0.1:8000/api/trucks/12/location/
 ```
 
-* Response
+* Request Body
 
 ```
+{
+    "street": "Mazowiecka",
+    "zip_code": "03-221",
+    "longitude": 56.666666,
+    "latitude": -24.076566,
+    "open_from": "4:2"
+}
+```
+
+* Response (status: 201 CREATED)
+
+```
+{
+    "street": "Mazowiecka",
+    "city": "",
+    "zip_code": "03-221",
+    "longitude": 56.666666,
+    "latitude": -24.076566,
+    "open_from": "04:02",
+    "closed_at": null
+}
 ```
