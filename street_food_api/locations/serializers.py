@@ -25,17 +25,18 @@ class LocationSerializer(serializers.ModelSerializer):
         return value
 
     def validate(self, data):
-        coordinates = (
-            f"{data.get('longitude', None)}, {data.get('latitude', None)}"
-        )
-        match_coordinates = re.match(
-            r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$",
-            coordinates,
-        )
-        if not match_coordinates:
-            raise serializers.ValidationError(
-                "Wrong latitude or longitude entered"
+        if data.get("longitude") or data.get("latitude"):
+            coordinates = (
+                f"{data.get('longitude', None)}, {data.get('latitude', None)}"
             )
+            match_coordinates = re.match(
+                r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$",
+                coordinates,
+            )
+            if not match_coordinates:
+                raise serializers.ValidationError(
+                    "Wrong latitude or longitude entered"
+                )
         return data
 
     def create(self, validated_data):

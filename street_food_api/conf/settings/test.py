@@ -7,3 +7,5 @@ DATABASES = {
 }
 
 PASSWORD_HASHERS = "django.contrib.auth.hashers.MD5PasswordHasher"
+
+AUTH_USER_MODEL = "users.User"
