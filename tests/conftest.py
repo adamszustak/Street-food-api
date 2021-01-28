@@ -1,9 +1,10 @@
 import pytest
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group, Permission
 from django.test.client import Client
 from trucks.models import PaymentMethod
 
-from .factories import PaymentMethodFactory
+from .factories import PaymentMethodFactory, UserFactory
 
 GROUP = "owners"
 MODELS = ["Truck", "Image", "location"]
@@ -48,7 +49,7 @@ def basic_user_client(db, basic_user):
 @pytest.fixture()
 def owner_user_client(db, basic_user):
     owner_group = Group.objects.get(name="Owners")
-    my_group.user_set.add(basic_user)
+    owner_group.user_set.add(basic_user)
     client = Client()
     client.login(username=basic_user.username, password="secret")
     return client

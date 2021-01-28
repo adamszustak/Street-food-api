@@ -63,7 +63,6 @@ class TruckSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         data = self.context.get("view").request.data
-        new_pa = self.context.get("payment")
         new_payments = data.get("payment", {})
         if new_payments:
             new_payments = self._get_payments(data)

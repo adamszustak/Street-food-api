@@ -14,3 +14,10 @@ class Location(models.Model):
     latitude = models.FloatField(_("Latitude"), blank=True, null=True)
     open_from = models.TimeField(_("Open from"), blank=True, null=True)
     closed_at = models.TimeField(_("Closed at"), blank=True, null=True)
+
+    class Meta:
+        verbose_name = _("Location")
+        verbose_name_plural = _("Locations")
+
+    def __str__(self):
+        return self.truck.name
