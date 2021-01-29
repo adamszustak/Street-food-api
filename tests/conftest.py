@@ -2,9 +2,10 @@ import pytest
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import Group, Permission
 from django.test.client import Client
+
 from trucks.models import PaymentMethod
 
-from .factories import PaymentMethodFactory, UserFactory
+from .factories import PaymentMethodFactory, TruckFactory, UserFactory
 
 GROUP = "owners"
 MODELS = ["Truck", "Image", "location"]

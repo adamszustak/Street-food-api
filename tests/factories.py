@@ -1,6 +1,7 @@
 import factory
 from django.contrib.auth import get_user_model
 from factory.faker import faker
+
 from trucks.models import PaymentMethod, Truck, TruckImage
 
 FAKE = faker.Faker()

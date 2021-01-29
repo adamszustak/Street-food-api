@@ -3,9 +3,11 @@ from unittest.mock import Mock
 import pytest
 from django.conf import settings
 from django.http import QueryDict
-from locations.serializers import LocationSerializer
 from rest_framework import serializers
 from rest_framework.test import APIRequestFactory
+
+from locations.models import Location
+from locations.serializers import LocationSerializer
 from trucks.models import PaymentMethod, Truck, TruckImage
 from trucks.serializers import TruckImageSerializer, TruckSerializer
 
@@ -23,7 +25,6 @@ def test_unique_validation_truckserializer():
     assert Truck.objects.count() == 1
 
 
-@pytest.mark.django_db
 @pytest.mark.parametrize(
     "payment", ["casssh", "debit card, credit c", "debbit carrd, cash"]
 )
@@ -116,3 +117,79 @@ def test_image_saving_truckserializer():
     truck = Truck.objects.get(name=serializer.data["name"])
     assert truck.images.exists()
     assert TruckImage.objects.filter(truck=truck).count() == 1
+
+
+@pytest.mark.parametrize("zip_code", ["03", "03-44", "ala", "O3-444"])
+def test_zipcode_validation_locationserializer_fail(zip_code):
+    data = {"street": "Mazowiecka", "zip_code": zip_code}
+    serializer = LocationSerializer(data=data)
+    serializer.is_valid()
+    assert "Wrong zip code entered" in serializer.errors["zip_code"]
+
+
+@pytest.mark.parametrize("zip_code", ["03-441", "00-000", "99-999"])
+def test_zipcode_validation_locationserializer_pass(zip_code):
+    data = {"street": "Mazowiecka", "zip_code": zip_code}
+    serializer = LocationSerializer(data=data)
+    serializer.is_valid()
+    assert not serializer.errors
+
+
+@pytest.mark.parametrize(
+    "latitude, longitude", [(+90.1, -100.111), (-91, 180), (75, 181)]
+)
+def test_coordinates_validation_locationserializer_fail(latitude, longitude):
+    data = {
+        "street": "Mazowiecka",
+        "zip_code": "03-411",
+        "longitude": longitude,
+        "latitude": latitude,
+    }
+    serializer = LocationSerializer(data=data)
+    serializer.is_valid()
+    assert (
+        "Wrong latitude or longitude entered"
+        in serializer.errors["non_field_errors"]
+    )
+
+
+@pytest.mark.parametrize(
+    "latitude, longitude",
+    [
+        (45, 180),
+        (+90.0, -127.554334),
+        (-90.000, -180.0000),
+        (+90, +180),
+        (47.1231231, 179.99999999),
+    ],
+)
+def test_coordinates_validation_locationserializer_pass(latitude, longitude):
+    data = {
+        "street": "Mazowiecka",
+        "zip_code": "03-411",
+        "longitude": longitude,
+        "latitude": latitude,
+    }
+    serializer = LocationSerializer(data=data)
+    serializer.is_valid()
+    assert not serializer.errors
+
+
+@pytest.mark.django_db
+def test_location_saving_locationserializer(db):
+    # create
+    truck = TruckFactory()
+    data = {"street": "Mazowiecka", "zip_code": "03-411"}
+    serializer = LocationSerializer(data=data)
+    serializer.is_valid()
+    serializer.save(truck=truck)
+    assert Location.objects.filter(truck=truck.id).exists()
+
+    # update
+    data = {"street": "Mazowiecka", "zip_code": "03-444"}
+    serializer = LocationSerializer(data=data)
+    serializer.is_valid()
+    serializer.save(truck=truck)
+    location = Location.objects.filter(truck=truck.id)
+    assert location.count() == 1
+    assert location[0].zip_code == "03-444"

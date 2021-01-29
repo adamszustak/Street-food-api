@@ -2,6 +2,7 @@ import re
 
 from django.conf import settings
 from rest_framework import serializers, validators
+
 from trucks.models import Truck
 
 from .models import Location
@@ -27,7 +28,7 @@ class LocationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         if data.get("longitude") or data.get("latitude"):
             coordinates = (
-                f"{data.get('longitude', None)}, {data.get('latitude', None)}"
+                f"{data.get('latitude', None)}, {data.get('longitude', None)}"
             )
             match_coordinates = re.match(
                 r"^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?),\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$",

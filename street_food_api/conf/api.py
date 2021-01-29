@@ -4,6 +4,7 @@ path("api/", include("conf.api", namespace="api")),
 """
 
 from rest_framework import routers
+
 from trucks import views as truck_views
 
 app_name = "api"

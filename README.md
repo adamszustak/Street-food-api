@@ -1,4 +1,5 @@
-# REST API Street food
+# REST API Street food   
+<img src="https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
 
 ## Overview
 
@@ -297,7 +298,7 @@ Field | Data Type | Required | Description
 --- | --- | --- | ---
 street | string | Y | Street where Truck is located (e.g 'Mazowiecka 12')
 zip_code | string | Y | Zip Code in format XX-XXX (e.g '03-333')
-longitude | float | N | Location (range: -180 to 180) -90 to 90
+longitude | float | N | Location (range: -180 to 180)
 latitude | float | N | Location (range: -90 to 90)
 open_from | string | N | Opening time in format %H:%M
 closed_at | string | N | Closing time in format %H:%M

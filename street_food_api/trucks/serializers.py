@@ -1,6 +1,7 @@
 from django.conf import settings
-from locations.serializers import LocationSerializer
 from rest_framework import serializers, validators
+
+from locations.serializers import LocationSerializer
 
 from .models import PaymentMethod, Truck, TruckImage
 
