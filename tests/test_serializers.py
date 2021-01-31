@@ -18,7 +18,7 @@ from .factories import TruckFactory, UserFactory, small_gif
 def test_unique_validation_truckserializer():
     TruckFactory(name="HamBug", is_confirmed=True)
     truck_serializer = TruckSerializer(
-        data={"name": "HamBug", "description": "Desc"}
+        data={"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     )
     assert not truck_serializer.is_valid()
     assert "This field must be unique." in truck_serializer.errors["name"]
@@ -30,10 +30,10 @@ def test_unique_validation_truckserializer():
 )
 def test_payments_validation_truckserializer_fail(base_setup, payment):
     # create
-    data = {"name": "HamBug", "description": "Desc"}
+    data = {"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     mock_view = Mock()
     mock_view.request = APIRequestFactory().request()
-    mock_view.request.data = {"payment": payment}
+    mock_view.request.data = {"payment_methods": payment}
     mock_view.request.user = UserFactory()
     serializer = TruckSerializer(data=data, context={"view": mock_view})
     serializer.is_valid()
@@ -47,11 +47,11 @@ def test_payments_validation_truckserializer_fail(base_setup, payment):
 )
 def test_payments_validation_truckserializer_pass(base_setup, payment):
     # create
-    data = {"name": "HamBug", "description": "Desc"}
+    data = {"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     mock_view = Mock()
     mock_view.request = APIRequestFactory().request()
     mock_view.request.user = UserFactory()
-    mock_view.request.data = {"payment": payment}
+    mock_view.request.data = {"payment_methods": payment}
     serializer = TruckSerializer(data=data, context={"view": mock_view})
     serializer.is_valid()
     serializer.save(owner=mock_view.request.user)
@@ -97,7 +97,7 @@ def test_payments_validation_truckserializer_pass(base_setup, payment):
 @pytest.mark.django_db
 def test_image_saving_truckserializer():
     # create
-    data = {"name": "HamBug", "description": "Desc"}
+    data = {"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     mock_view = Mock()
     mock_view.request = APIRequestFactory().request()
     mock_view.request.user = UserFactory()

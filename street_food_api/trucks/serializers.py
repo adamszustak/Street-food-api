@@ -41,6 +41,7 @@ class TruckSerializer(serializers.ModelSerializer):
             "instagram",
             "page_url",
             "description",
+            "city",
             "payment_methods",
             "images",
             "updated",
@@ -49,7 +50,7 @@ class TruckSerializer(serializers.ModelSerializer):
 
     def _get_payments(self, data):
         new_payments = []
-        payments = data.get("payment")
+        payments = data.get("payment_methods")
         for payment in payments.split(", "):
             try:
                 filtered_payment = PaymentMethod.objects.get(
@@ -64,7 +65,7 @@ class TruckSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         data = self.context.get("view").request.data
-        new_payments = data.get("payment", {})
+        new_payments = data.get("payment_methods", {})
         if new_payments:
             new_payments = self._get_payments(data)
         truck = Truck.objects.create(**validated_data)
@@ -81,7 +82,7 @@ class TruckSerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         data = self.context.get("view").request.data
         method = self.context.get("view").request.method
-        new_payments = data.get("payment", {})
+        new_payments = data.get("payment_methods", {})
         if new_payments:
             new_payments = self._get_payments(data)
         if data.get("image"):

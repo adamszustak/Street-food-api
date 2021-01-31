@@ -7,7 +7,7 @@ from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
 
-from .managers import ConfirmedTruckQuerySet
+from .managers import ConfirmedTruckManager
 
 
 class Truck(models.Model):
@@ -34,7 +34,7 @@ class Truck(models.Model):
     slug = models.SlugField(editable=False)
 
     objects = models.Manager()
-    confirmed = ConfirmedTruckQuerySet().as_manager()
+    confirmed = ConfirmedTruckManager()
 
     class Meta:
         verbose_name = _("Truck")

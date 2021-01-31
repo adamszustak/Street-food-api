@@ -1,12 +1,14 @@
-# REST API Street food   
+# REST API Street food
+
 <img src="https://img.shields.io/badge/stability-work_in_progress-lightgrey.svg"> <img src="https://img.shields.io/badge/License-MIT-yellow.svg">
 
 ## Overview
 
-Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential future customers. 
+Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential future customers.
 The project uses PostgreSQL as default database.
 
 ## Table of Contents
+
 - [Technologies/libraries](#technologieslibraries-used)
   - [Additional libraries](#additional-libraries-used-to-make-sure-the-code-meets-all-necessary-conventions)
 - [Installation](#installation)
@@ -29,6 +31,7 @@ The project uses PostgreSQL as default database.
 - [Django-phonenumber-field](https://github.com/stefanfoulis/django-phonenumber-field)
 
 ### Additional libraries used to make sure the code meets all necessary conventions
+
 - [Pre-commit](https://github.com/pre-commit/pre-commit)
   - [Black](https://github.com/psf/black): as a hook.
   - [Flake8](https://github.com/PyCQA/flake8): as a hook.
@@ -57,17 +60,17 @@ pip install -r requirements.txt
 
 ## Authentication & Permissions
 
-Access to the API is granted by providing your username and password using HTTP basic authentication. 
+Access to the API is granted by providing your username and password using HTTP basic authentication.
 The basic user can only list objects and retrieve a single object. A user added to the group of owners can additionally create new Trucks as well as update and destroy Trucks belonging to him.
 
 ## Structure
 
 ### For Basic Users
 
-Endpoint |HTTP Method | CRUD Method | Result | Info
--- | -- |-- |-- |--
-`trucks/` | GET | READ | Get all trucks | [Details](#get-all-trucks)
-`trucks/:id/` | GET | READ | Get a single truck | [Details](#get-a-single-truck)
+| Endpoint      | HTTP Method | CRUD Method | Result             | Info                           |
+| ------------- | ----------- | ----------- | ------------------ | ------------------------------ |
+| `trucks/`     | GET         | READ        | Get all trucks     | [Details](#get-all-trucks)     |
+| `trucks/:id/` | GET         | READ        | Get a single truck | [Details](#get-a-single-truck) |
 
 #### Get all trucks
 
@@ -75,13 +78,13 @@ Return a list of all accepted by administrators Trucks
 
 #### Example
 
-* Request
+- Request
 
 ```
 GET http://127.0.0.1:8000/api/trucks/
 ```
 
-* Response (status: 200 OK)
+- Response (status: 200 OK)
 
 ```
 "results": [
@@ -95,6 +98,7 @@ GET http://127.0.0.1:8000/api/trucks/
         "instagram": "#havenham",
         "page_url": "http://www.uczsieit.pl",
         "description": "The best ham even!",
+        "city": "Warsaw",
         "payment_methods": [
             "Credit Card",
             "Debit Card",
@@ -124,6 +128,7 @@ GET http://127.0.0.1:8000/api/trucks/
         "instagram": "",
         "page_url": "",
         "description": "The best Truck in the world",
+        "city": "Warsaw",
         "payment_methods": [
             "Debit Card"
         ],
@@ -142,13 +147,13 @@ Return a single Truck.
 
 #### Example
 
-* Request
+- Request
 
 ```
 GET http://127.0.0.1:8000/api/trucks/1/
 ```
 
-* Response (status: 200 OK)
+- Response (status: 200 OK)
 
 ```
 {
@@ -161,6 +166,7 @@ GET http://127.0.0.1:8000/api/trucks/1/
     "instagram": "",
     "page_url": "",
     "description": "Tasie it!",
+    "city": "Warsaw",
     "payment_methods": [
         "Credit Card",
         "Debit Card",
@@ -175,12 +181,12 @@ GET http://127.0.0.1:8000/api/trucks/1/
 
 ### For Truck Owners
 
-Endpoint |HTTP Method | CRUD Method | Result | Info
--- | -- |-- |-- |--
-`trucks/`| POST | CREATE | Create a new Truck | [Details](#create-a-new-truck)
-`trucks/:id/` | PUT & PATCH | UPDATE | Update a Truck | [Details](#update-a-truck)
-`trucks/:id/` | DELETE | DELETE | Delete a Truck | [Details](#delete-a-truck)
-`trucks/:id/location/` | POST | CREATE | Create Location for Truck | [Details](#create-location-for-truck)
+| Endpoint               | HTTP Method | CRUD Method | Result                    | Info                                  |
+| ---------------------- | ----------- | ----------- | ------------------------- | ------------------------------------- |
+| `trucks/`              | POST        | CREATE      | Create a new Truck        | [Details](#create-a-new-truck)        |
+| `trucks/:id/`          | PUT & PATCH | UPDATE      | Update a Truck            | [Details](#update-a-truck)            |
+| `trucks/:id/`          | DELETE      | DELETE      | Delete a Truck            | [Details](#delete-a-truck)            |
+| `trucks/:id/location/` | POST        | CREATE      | Create Location for Truck | [Details](#create-location-for-truck) |
 
 #### Create a new Truck
 
@@ -189,30 +195,30 @@ The owner is added automatically when the object is saved as well as slug field.
 Before the Truck is available to readers, it has to be approved by the administrator.
 Creation and update dates are added automatically.
 
-* multipart/form-data body parameters
+- multipart/form-data body parameters
 
-Field | Data Type | Required | Description
---- | --- | --- | ---
-name | string | Y | Food Truck name
-phone | string | N | Phone Number accepted in international format (e.g '+41524204242')
-email | string | N | Email address (e.g 'aszustak@onet.pl')
-city | string | N | City where Food Truck is mainly placed (e.g 'Warsaw')
-facebook | string | N | Facebook address
-instagram | string | N | Instagram address
-page_url | string | N | Truck website (e.g 'https://www.uczsieit.pl')
-description | string | Y | Short description of the Truck (max length is 200 chars)
-payment | string | N | Option available: cash, credit card, debit card, by phone. Must be separated by commas
-image | field | N | Truck images, if more than 1 add each photo as a separate image keyword! Max size is 2MB.
+| Field           | Data Type | Required | Description                                                                               |
+| --------------- | --------- | -------- | ----------------------------------------------------------------------------------------- |
+| name            | string    | Y        | Food Truck name                                                                           |
+| phone           | string    | N        | Phone Number accepted in international format (e.g '+41524204242')                        |
+| email           | string    | N        | Email address (e.g 'aszustak@onet.pl')                                                    |
+| city            | string    | Y        | City where Food Truck is mainly placed (e.g 'Warsaw')                                     |
+| facebook        | string    | N        | Facebook address                                                                          |
+| instagram       | string    | N        | Instagram address                                                                         |
+| page_url        | string    | N        | Truck website (e.g 'https://www.uczsieit.pl')                                             |
+| description     | string    | Y        | Short description of the Truck (max length is 200 chars)                                  |
+| payment_methods | string    | N        | Option available: cash, credit card, debit card, by phone. Must be separated by commas    |
+| image           | field     | N        | Truck images, if more than 1 add each photo as a separate image keyword! Max size is 2MB. |
 
 #### Example
 
-* Request
+- Request
 
 ```
 POST http://127.0.0.1:8000/api/trucks/
 ```
 
-* Request Body
+- Request Body
 
 ```
 {
@@ -224,13 +230,13 @@ POST http://127.0.0.1:8000/api/trucks/
     "city": "Warsaw",
     "page_url": "http://www.uczsieit.pl",
     "description": "The best ham even!",
-    "payment": "Credit card, Cash",
+    "payment_methods": "Credit card, Cash",
     "image": ImageField,
     "image": ImageField
 }
 ```
 
-* Response (status: 201 CREATED)
+- Response (status: 201 CREATED)
 
 ```
 {
@@ -243,6 +249,7 @@ POST http://127.0.0.1:8000/api/trucks/
     "instagram": "#haven-ham",
     "page_url": "http://www.uczsieit.pl",
     "description": "The best ham even!",
+    "city": "Warsaw",
     "payment_methods": [
         "Credit Card",
         "Debit Card",
@@ -264,13 +271,13 @@ Requires **multipart / form-data** encoding when body includes **images**.
 
 #### Example
 
-* Request
+- Request
 
 ```
 PUT/PATCH http://127.0.0.1:8000/api/trucks/12/
 ```
 
-* Response (status: 200 OK)
+- Response (status: 200 OK)
 
 #### Delete a Truck
 
@@ -278,13 +285,13 @@ Delete a Truck.
 
 #### Example
 
-* Request
+- Request
 
 ```
 DELETE http://127.0.0.1:8000/api/trucks/12/
 ```
 
-* Response (status: 204 NO CONTENT)
+- Response (status: 204 NO CONTENT)
 
 #### Create Location for Truck
 
@@ -292,24 +299,24 @@ Creates a new Location and returns the newly-created object. One Truck can has o
 
 #### Example
 
-* JSON body parameters
+- JSON body parameters
 
-Field | Data Type | Required | Description
---- | --- | --- | ---
-street | string | Y | Street where Truck is located (e.g 'Mazowiecka 12')
-zip_code | string | Y | Zip Code in format XX-XXX (e.g '03-333')
-longitude | float | N | Location (range: -180 to 180)
-latitude | float | N | Location (range: -90 to 90)
-open_from | string | N | Opening time in format %H:%M
-closed_at | string | N | Closing time in format %H:%M
+| Field     | Data Type | Required | Description                                         |
+| --------- | --------- | -------- | --------------------------------------------------- |
+| street    | string    | Y        | Street where Truck is located (e.g 'Mazowiecka 12') |
+| zip_code  | string    | Y        | Zip Code in format XX-XXX (e.g '03-333')            |
+| longitude | float     | N        | Location (range: -180 to 180)                       |
+| latitude  | float     | N        | Location (range: -90 to 90)                         |
+| open_from | string    | N        | Opening time in format %H:%M                        |
+| closed_at | string    | N        | Closing time in format %H:%M                        |
 
-* Request
+- Request
 
 ```
 POST http://127.0.0.1:8000/api/trucks/12/location/
 ```
 
-* Request Body
+- Request Body
 
 ```
 {
@@ -321,12 +328,12 @@ POST http://127.0.0.1:8000/api/trucks/12/location/
 }
 ```
 
-* Response (status: 201 CREATED)
+- Response (status: 201 CREATED)
 
 ```
 {
     "street": "Mazowiecka",
-    "city": "",
+    "city": "Warsaw",
     "zip_code": "03-221",
     "longitude": 56.666666,
     "latitude": -24.076566,
