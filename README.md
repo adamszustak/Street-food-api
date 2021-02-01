@@ -4,7 +4,7 @@
 
 ## Overview
 
-Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential future customers.
+Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential future customers who want to find truck. :pizza: :hamburger:
 The project uses PostgreSQL as default database.
 
 ## Table of Contents
@@ -12,6 +12,7 @@ The project uses PostgreSQL as default database.
 - [Technologies/libraries](#technologieslibraries-used)
   - [Additional libraries](#additional-libraries-used-to-make-sure-the-code-meets-all-necessary-conventions)
 - [Installation](#installation)
+- [Testing](#testing)
 - [Authentication & Permissions](#authentication--permissions)
 - [Structure](#structure)
   - [For Basic Users](#for-basic-users)
@@ -57,6 +58,16 @@ poetry install
 cat requirements.txt|xargs poetry add
 pip install -r requirements.txt
 ```
+
+## Testing
+
+You need to have Python 3.7 or 3.9 available in your system. Now running tests is as simple as typing this command:
+
+```
+tox -e linting,py37 (or py39)
+```
+
+This command will run tests via the "tox" tool against Python 3.7/3.9 and also perform "lint" coding-style checks.
 
 ## Authentication & Permissions
 
