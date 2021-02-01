@@ -4,7 +4,7 @@
 
 ## Overview
 
-Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential future customers who want to find truck. :pizza: :hamburger:
+Street food API is a REST api written in Django-rest-framework for people who wants to share their food truck and for potential customers who want to find food truck. :pizza: :hamburger:
 The project uses PostgreSQL as default database.
 
 ## Table of Contents
@@ -78,14 +78,24 @@ The basic user can only list objects and retrieve a single object. A user added 
 
 ### For Basic Users
 
-| Endpoint      | HTTP Method | CRUD Method | Result             | Info                           |
-| ------------- | ----------- | ----------- | ------------------ | ------------------------------ |
-| `trucks/`     | GET         | READ        | Get all trucks     | [Details](#get-all-trucks)     |
-| `trucks/:id/` | GET         | READ        | Get a single truck | [Details](#get-a-single-truck) |
+| Endpoint        | HTTP Method | CRUD Method | Result                                              | Info                           |
+| --------------- | ----------- | ----------- | --------------------------------------------------- | ------------------------------ |
+| `trucks/`       | GET         | READ        | Get all trucks                                      | [Details](#get-all-trucks)     |
+| `trucks/mine/`  | GET         | READ        | Get trucks belonging to user                        |                                |
+| `trucks/opens/` | GET         | READ        | Get the trucks open at the time the request is sent | [Details](#get-open-trucks)    |
+| `trucks/:id/`   | GET         | READ        | Get a single truck                                  | [Details](#get-a-single-truck) |
 
 #### Get all trucks
 
 Return a list of all accepted by administrators Trucks
+
+- Available query parameters
+
+| Query     | Data type | Description                                    | Lookup    |
+| --------- | --------- | ---------------------------------------------- | --------- |
+| `name`    | string    | Filtering by food truck name (e.g 'HeavenHam') | icontains |
+| `city`    | string    | Filtering by city (e.g 'HeavenHam')            | icontains |
+| `payment` | string    | Filtering by available payment (e.g 'cash')    | iexact    |
 
 #### Example
 
@@ -151,6 +161,16 @@ GET http://127.0.0.1:8000/api/trucks/
     }
 ]
 ```
+
+#### Get open trucks
+
+Return a list of all working trucks at the time the request is sent.
+
+- Available query parameters
+
+| Query  | Data type | Description                      | Lookup    |
+| ------ | --------- | -------------------------------- | --------- |
+| `city` | string    | Filtering by city (e.g 'Warsaw') | icontains |
 
 #### Get a single truck
 
