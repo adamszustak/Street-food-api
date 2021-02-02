@@ -17,6 +17,7 @@ The project uses PostgreSQL as default database.
 - [Structure](#structure)
   - [For Basic Users](#for-basic-users)
     - [Get all trucks](#get-all-trucks)
+    - [Get open trucks](#get-open-trucks)
     - [Get a single truck](#get-a-single-truck)
   - [For Truck Owners](#for-truck-owners)
     - [Create a new Truck](#create-a-new-truck)
