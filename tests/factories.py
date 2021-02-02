@@ -2,6 +2,7 @@ import factory
 from django.contrib.auth import get_user_model
 from factory.faker import faker
 
+from locations.models import Location
 from trucks.models import PaymentMethod, Truck, TruckImage
 
 FAKE = faker.Faker()
@@ -36,6 +37,15 @@ class TruckImageFactory(factory.django.DjangoModelFactory):
         model = TruckImage
 
     truck = factory.SubFactory(TruckFactory)
+
+
+class LocationFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Location
+
+    truck = factory.SubFactory(TruckFactory)
+    street = factory.Faker("street_name")
+    zip_code = "03-111"
 
 
 small_gif = (

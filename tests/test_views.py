@@ -1,14 +1,17 @@
+import datetime
+
 import pytest
 from django.contrib.auth.models import Group, Permission
+from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
 from locations.models import Location
-from trucks.models import Truck
+from trucks.models import PaymentMethod, Truck
 from trucks.serializers import TruckSerializer
 
-from .factories import TruckFactory
+from .factories import LocationFactory, TruckFactory
 
 
 @pytest.mark.django_db
@@ -35,6 +38,52 @@ def test_viewset_trucklist_GET(basic_user_client):
         truck_dict.pop("payment_methods")
         response_dict.pop("payment_methods")
         assert truck_dict == response_dict
+
+
+@pytest.mark.django_db
+def test_viewset_trucklist_queries_GET(base_setup, basic_user_client):
+    truck_name = TruckFactory(name="Heaven", is_confirmed=True)
+    truck_city = TruckFactory(city="Warsaw", is_confirmed=True)
+    truck_payment = TruckFactory(is_confirmed=True)
+    truck_payment.payment_methods.add(
+        PaymentMethod.objects.get(payment_name="Cash")
+    )
+    assert Truck.objects.count() == 3
+
+    url = reverse("api:truck-list")
+    # name
+    response = basic_user_client.get(url, {"name": "heav"})
+    truck_dict = TruckSerializer(instance=truck_name).data
+    truck_dict.pop("payment_methods")
+    response_truck = dict(response.data["results"][0])
+    response_truck.pop("payment_methods")
+    assert response.status_code == status.HTTP_200_OK
+    assert truck_dict == response_truck
+
+    # city
+    response = basic_user_client.get(url, {"city": "wars"})
+    truck_dict = TruckSerializer(instance=truck_city).data
+    truck_dict.pop("payment_methods")
+    response_truck = dict(response.data["results"][0])
+    response_truck.pop("payment_methods")
+    assert response.status_code == status.HTTP_200_OK
+    assert truck_dict == response_truck
+
+    # payment
+    response = basic_user_client.get(url, {"payment": "cash"})
+    truck_dict = TruckSerializer(instance=truck_payment).data
+    truck_dict.pop("payment_methods")
+    response_truck = dict(response.data["results"][0])
+    response_truck.pop("payment_methods")
+    assert response.status_code == status.HTTP_200_OK
+    assert truck_dict == response_truck
+
+    # wrong queries
+    response = basic_user_client.get(
+        url, {"payment": "ca", "city": "szcz", "name": "uga"}
+    )
+    assert response.status_code == status.HTTP_200_OK
+    assert not response.data["results"]
 
 
 @pytest.mark.django_db
@@ -169,3 +218,66 @@ def test_viewset_truckdetail_LOCATION_POST(
     for k, v in data.items():
         assert v in getattr(Location.objects.latest("id"), k)
         assert v in response.data[k]
+
+
+@pytest.mark.django_db
+def test_viewset_trucklist_MINE_GET(
+    basic_user_client, basic_user, owner_user_client, owner_user
+):
+    truck = TruckFactory(owner=owner_user)
+    owner_group = Group.objects.get(name="Owners")
+    owner_group.user_set.add(basic_user)
+    url = reverse("api:truck-mine")
+
+    # owner
+    response = owner_user_client.get(url)
+    truck_dict = TruckSerializer(instance=truck).data
+    truck_dict.pop("payment_methods")
+    response_truck = dict(response.data["results"][0])
+    response_truck.pop("payment_methods")
+    assert response.status_code == status.HTTP_200_OK
+    assert truck_dict == response_truck
+
+    # not owner
+    response = basic_user_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+    assert not response.data["results"]
+
+
+@pytest.mark.django_db
+def test_viewset_trucklist_OPENS_GET(basic_user_client, basic_user):
+    truck_open = TruckFactory(name="Truczek")
+    truck_closed = TruckFactory()
+    LocationFactory(
+        truck=truck_open,
+        open_from=datetime.time(6),
+        closed_at=datetime.time(18),
+    )
+    LocationFactory(
+        truck=truck_closed,
+        open_from=datetime.time(10),
+        closed_at=datetime.time(16),
+    )
+    url = reverse("api:truck-opens")
+
+    # both open
+    freezer = freeze_time("2021-02-02 12:00:01")
+    freezer.start()
+    response = basic_user_client.get(url)
+    freezer.stop()
+    assert response.data["count"] == 2
+
+    # one open
+    freezer = freeze_time("2021-02-02 07:00:01")
+    freezer.start()
+    response = basic_user_client.get(url)
+    freezer.stop()
+    assert response.data["count"] == 1
+    assert response.data["results"][0]["name"] == truck_open.name
+
+    # both closed
+    freezer = freeze_time("2021-02-02 04:00:01")
+    freezer.start()
+    response = basic_user_client.get(url)
+    freezer.stop()
+    assert response.data["count"] == 0
