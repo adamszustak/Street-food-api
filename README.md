@@ -56,7 +56,7 @@ To make the project work on your local machine you need to install [poetry](http
 poetry install
 
 # without Poetry
-cat requirements.txt|xargs poetry add
+cat requirements.txt|xargs poetry add 
 pip install -r requirements.txt
 ```
 
