@@ -56,6 +56,9 @@ Pillow = "^8.1.0"
 django-cleanup = "^5.1.0"
 django-filter = "^2.4.0"
 freezegun = "^1.1.0"
+celery = "^5.0.5"
+requests = "^2.25.1"
+redis = "^3.5.3"
 
 [tool.poetry.dev-dependencies]
 django-debug-toolbar = "^3.2"

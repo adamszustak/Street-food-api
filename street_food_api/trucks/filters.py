@@ -10,7 +10,8 @@ class TruckFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     city = filters.CharFilter(field_name="city", lookup_expr="icontains")
     payment = filters.CharFilter(
-        field_name="payment_methods__payment_name", lookup_expr="iexact",
+        field_name="payment_methods__payment_name",
+        lookup_expr="iexact",
     )
 
     class Meta:

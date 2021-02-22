@@ -18,8 +18,12 @@ class TruckImageSerializer(serializers.ModelSerializer):
 
 
 class TruckSerializer(serializers.ModelSerializer):
-    location = LocationSerializer(read_only=True,)
-    owner = serializers.PrimaryKeyRelatedField(read_only=True,)
+    location = LocationSerializer(
+        read_only=True,
+    )
+    owner = serializers.PrimaryKeyRelatedField(
+        read_only=True,
+    )
     name = serializers.CharField(
         max_length=50,
         validators=[

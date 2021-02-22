@@ -8,6 +8,7 @@ from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
 from locations.serializers import LocationSerializer
+from locations.tasks import get_geolocation
 
 from .filters import TruckFilter
 from .models import PaymentMethod, Truck
@@ -75,5 +76,6 @@ class TruckViewSet(viewsets.ModelViewSet):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(city=truck.city, truck=truck)
+            get_geolocation.delay(truck.id)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
