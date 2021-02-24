@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.db import transaction
 from django.db.models import Q
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
@@ -14,6 +15,7 @@ from .filters import TruckFilter
 from .models import PaymentMethod, Truck
 from .permissions import IsOwnerOrReadOnly
 from .serializers import TruckImageSerializer, TruckSerializer
+from .throttle import UserGetRateThrottle, UserPostRateThrottle
 
 
 class TruckViewSet(viewsets.ModelViewSet):
@@ -24,6 +26,7 @@ class TruckViewSet(viewsets.ModelViewSet):
         permissions.DjangoModelPermissions,
         IsOwnerOrReadOnly,
     )
+    throttle_classes = [UserPostRateThrottle, UserGetRateThrottle]
 
     def _get_images(self, request):
         for img in request.data.getlist("image"):
@@ -76,6 +79,6 @@ class TruckViewSet(viewsets.ModelViewSet):
         serializer = LocationSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             serializer.save(city=truck.city, truck=truck)
-            get_geolocation.delay(truck.id)
+            transaction.on_commit(lambda: get_geolocation.delay(truck.id))
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
