@@ -17,3 +17,5 @@ def debug_task(self):
 
 
 # poetry run celery -A conf worker --loglevel=INFO
+
+# redis-cli -h localhost -p 6379 -n 0 keys \*

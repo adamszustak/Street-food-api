@@ -12,13 +12,13 @@ omit = [
 ]
 
 [tool.isort]
-known_third_party = ["celery", "conf", "django", "django_filters", "factory", "freezegun", "phonenumber_field", "pytest", "requests", "rest_framework"]
+known_third_party = ["celery", "django", "django_filters", "factory", "freezegun", "phonenumber_field", "pytest", "requests", "rest_framework"]
 combine_as_imports = true
 default_section = "THIRDPARTY"
 include_trailing_comma = true
 line_length = 79
 multi_line_output = 3
-known_first_party = ["street_food_api", "locations", "trucks"]
+known_first_party = ["street_food_api", "locations", "trucks", "conf"]
 known_django = "django"
 sections = "FUTURE,STDLIB,DJANGO,THIRDPARTY,FIRSTPARTY,LOCALFOLDER"
 

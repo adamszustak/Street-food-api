@@ -1,4 +1,5 @@
 import datetime
+from unittest.mock import patch
 
 import pytest
 from django.contrib.auth.models import Group, Permission
@@ -8,6 +9,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
 from locations.models import Location
+from locations.tasks import get_geolocation
 from trucks.models import PaymentMethod, Truck
 from trucks.serializers import TruckSerializer
 
@@ -193,9 +195,10 @@ def test_viewset_truckdetail_DELETE(
     assert not Truck.objects.filter(id=truck.id).exists()
 
 
-@pytest.mark.django_db
+@patch("locations.tasks.get_geolocation.delay")
+@pytest.mark.django_db(transaction=True)
 def test_viewset_truckdetail_LOCATION_POST(
-    basic_user_client, basic_user, owner_user_client, owner_user
+    mocked_task, basic_user_client, basic_user, owner_user_client, owner_user
 ):
     truck = TruckFactory(owner=owner_user, is_confirmed=True)
     data = {"street": "Mazowiecka 12", "zip_code": "03-111"}
@@ -218,6 +221,7 @@ def test_viewset_truckdetail_LOCATION_POST(
     for k, v in data.items():
         assert v in getattr(Location.objects.latest("id"), k)
         assert v in response.data[k]
+    mocked_task.assert_called_with(truck.id)
 
 
 @pytest.mark.django_db

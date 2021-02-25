@@ -14,6 +14,7 @@ The project uses PostgreSQL as default database.
 - [Installation](#installation)
 - [Testing](#testing)
 - [Authentication & Permissions](#authentication--permissions)
+- [Throttling](#throttling)
 - [Structure](#structure)
   - [For Basic Users](#for-basic-users)
     - [Get all trucks](#get-all-trucks)
@@ -27,7 +28,7 @@ The project uses PostgreSQL as default database.
 
 ## Technologies/libraries used
 
-- Python 3.7
+- Python 3.8
 - [Django-rest-framework](https://github.com/encode/django-rest-framework)
 - [Django-filter](https://github.com/carltongibson/django-filter)
 - [Django-phonenumber-field](https://github.com/stefanfoulis/django-phonenumber-field)
@@ -62,18 +63,22 @@ pip install -r requirements.txt
 
 ## Testing
 
-You need to have Python 3.7 or 3.9 available in your system. Now running tests is as simple as typing this command:
+You need to have Python 3.8 available in your system. Now running tests is as simple as typing this command:
 
 ```
-tox -e linting,py37 (or py39)
+tox -e linting,py38
 ```
 
-This command will run tests via the "tox" tool against Python 3.7/3.9 and also perform "lint" coding-style checks.
+This command will run tests via the "tox" tool against Python 3.8 and also perform "lint" coding-style checks.
 
 ## Authentication & Permissions
 
 Access to the API is granted by providing your username and password using HTTP basic authentication.
 The basic user can only list objects and retrieve a single object. A user added to the group of owners can additionally create new Trucks as well as update and destroy Trucks belonging to him.
+
+## Throttling
+
+Each user can make 2 POST requests per minute and 10 GET requests per minute.
 
 ## Structure
 
@@ -327,7 +332,8 @@ DELETE http://127.0.0.1:8000/api/trucks/12/
 
 #### Create Location for Truck
 
-Creates a new Location and returns the newly-created object. One Truck can has only one Location! When POST, old Location is removed and replaced by new Location.
+Creates a new Location and returns the newly-created object. One Truck can has only one Location! When POST, old Location is removed and replaced by new Location. 
+For each location, an asynchronous request is made to get the exact location (latitude / longitude) to make it easier for customers to get to the truck. You will get the answer immediately, but sometimes it may take a few minutes to get the coordinates, be patient :). In the absence of this information, repeat the same action. This could be due to an error or connection problems.
 
 #### Example
 

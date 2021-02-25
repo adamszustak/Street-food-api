@@ -1,7 +1,8 @@
 import requests
 from celery.exceptions import MaxRetriesExceededError, SoftTimeLimitExceeded
-from conf.celery import app
 from django.conf import settings
+
+from conf.celery import app
 
 from .models import Location
 
@@ -10,8 +11,9 @@ from .models import Location
 def get_geolocation(self, id):
     location = Location.objects.get(truck_id=id)
     try:
+        url = "http://api.positionstack.com/v1/forward"
         response = requests.get(
-            "http://api.positionstack.com/v1/forward",
+            url,
             {
                 "access_key": settings.GEO_KEY,
                 "query": f"{location.zip_code} {location.street}, {location.city}, Poland",

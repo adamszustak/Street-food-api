@@ -1,11 +1,12 @@
 import itertools
 
-from conf.utils import image_directory_path
 from django.conf import settings
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
 from phonenumber_field.modelfields import PhoneNumberField
+
+from conf.utils import image_directory_path
 
 from .managers import ConfirmedTruckManager
 
