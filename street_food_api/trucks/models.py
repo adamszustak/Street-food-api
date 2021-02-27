@@ -27,7 +27,7 @@ class Truck(models.Model):
     page_url = models.URLField(_("Page URL"), blank=True, max_length=200)
     description = models.CharField(_("Description"), max_length=200)
     payment_methods = models.ManyToManyField(
-        "trucks.PaymentMethod", verbose_name=_("Payment Methods")
+        "trucks.PaymentMethod", verbose_name=_("Payment Methods"), blank=True
     )
     is_confirmed = models.BooleanField(_("Confirmed"), default=False)
     created = models.DateTimeField(_("Created"), auto_now_add=True)

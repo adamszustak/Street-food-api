@@ -3,3 +3,19 @@ from .base import *
 DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
+
+REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
+    "rest_framework.renderers.JSONRenderer",
+]
+
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user_post"] = "2/minute"
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user_get"] = "10/minute"
+
+##### TO IMPLEMENT #####
+
+# SECURE_REFERRER_POLICY = 'same-origin'
+# X_FRAME_OPTIONS = 'DENY'
+# SECURE_CONTENT_TYPE_NOSNIFF = True
+# SECURE_BROWSER_XSS_FILTER = True
+# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SECURE_HSTS_SECONDS = 31536000

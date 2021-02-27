@@ -3,6 +3,8 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.parsers import FormParser, MultiPartParser
@@ -45,6 +47,10 @@ class TruckViewSet(viewsets.ModelViewSet):
         if request.data.get("image"):
             self._get_images(request)
         return super(TruckViewSet, self).update(request, *args, **kwargs)
+
+    @method_decorator(cache_page(60 * 60))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
     @action(detail=False, methods=["get"])
     def mine(self, request):
