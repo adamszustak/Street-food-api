@@ -5,7 +5,7 @@ from rest_framework.test import APIClient
 
 from trucks.models import PaymentMethod
 
-from .factories import PaymentMethodFactory, TruckFactory, UserFactory
+from .factories import PaymentMethodFactory, UserFactory
 
 GROUP = "Owners"
 MODELS = ["Truck", "Image", "Location"]

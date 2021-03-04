@@ -132,8 +132,7 @@ REST_FRAMEWORK = {
         "user_post": "100/minute",
         "user_get": "100/minute",
     },
-    # 'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 2,
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.NamespaceVersioning",
 }
 
 
@@ -150,9 +149,6 @@ GEO_KEY = get_secret("GEO_API")
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
-        "KEY_PREFIX": "cache",
+        "BACKEND": "django.core.cache.backends.dummy.DummyCache",
     }
 }

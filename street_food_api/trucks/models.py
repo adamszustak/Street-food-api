@@ -78,7 +78,9 @@ class TruckImage(models.Model):
         blank=True,
         verbose_name=_("Truck"),
     )
-    image = models.ImageField(_("Image"), upload_to=image_directory_path)
+    image = models.ImageField(
+        _("Image"), upload_to=image_directory_path, max_length=200
+    )
 
     class Meta:
         verbose_name = _("Image")

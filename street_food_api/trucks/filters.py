@@ -1,6 +1,3 @@
-import datetime
-
-from django.db.models import F, Q
 from django_filters import rest_framework as filters
 
 from .models import Truck

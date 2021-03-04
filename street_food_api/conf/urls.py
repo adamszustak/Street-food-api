@@ -5,12 +5,11 @@ from django.urls import include, path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include("conf.api", namespace="api")),
+    path("api/v1/", include("conf.api", namespace="v1")),
 ]
 
 if settings.DEBUG:
     import debug_toolbar
-    from django.conf.urls.static import static
 
     urlpatterns = (
         [path("__debug__/", include(debug_toolbar.urls))]

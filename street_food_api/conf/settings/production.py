@@ -1,4 +1,4 @@
-from .base import *
+from .base import *  # noqa: F403
 
 DEBUG = False
 
@@ -10,6 +10,15 @@ REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
 
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user_post"] = "2/minute"
 REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"]["user_get"] = "10/minute"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "KEY_PREFIX": "cache",
+    }
+}
 
 ##### TO IMPLEMENT #####
 

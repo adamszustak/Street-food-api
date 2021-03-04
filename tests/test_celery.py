@@ -3,7 +3,6 @@ from unittest.mock import patch
 import pytest
 import requests
 
-from locations.models import Location
 from locations.tasks import get_geolocation
 
 from .factories import LocationFactory, TruckFactory

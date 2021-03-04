@@ -1,20 +1,18 @@
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
-from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.response import Response
 
 from locations.serializers import LocationSerializer
 from locations.tasks import get_geolocation
 
 from .filters import TruckFilter
-from .models import PaymentMethod, Truck
+from .models import Truck
 from .permissions import IsOwnerOrReadOnly
 from .serializers import TruckImageSerializer, TruckSerializer
 from .throttle import UserGetRateThrottle, UserPostRateThrottle
@@ -54,7 +52,13 @@ class TruckViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["get"])
     def mine(self, request):
-        trucks = Truck.objects.filter(owner=request.user).order_by("-updated")
+        trucks = (
+            self.filter_queryset(self.get_queryset())
+            .filter(owner=request.user)
+            .order_by("-updated")
+        )
+        for truck in trucks:
+            print(truck.city)
         page = self.paginate_queryset(trucks)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
@@ -65,13 +69,10 @@ class TruckViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"])
     def opens(self, request):
         current_time = datetime.datetime.now().time()
-        qs = Truck.objects.filter(
+        qs = self.filter_queryset(self.get_queryset()).filter(
             Q(location__open_from__lte=current_time)
             & Q(location__closed_at__gte=current_time)
         )
-        city_param = self.request.query_params.get("city", None)
-        if city_param:
-            qs = qs.filter(city__icontains=city_param)
         page = self.paginate_queryset(qs)
         if page is not None:
             serializer = self.get_serializer(page, many=True)

@@ -2,14 +2,13 @@ import datetime
 from unittest.mock import patch
 
 import pytest
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import Group
 from freezegun import freeze_time
 from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 
 from locations.models import Location
-from locations.tasks import get_geolocation
 from trucks.models import PaymentMethod, Truck
 from trucks.serializers import TruckSerializer
 
@@ -20,7 +19,7 @@ from .factories import LocationFactory, TruckFactory
 def test_viewset_trucklist_GET(basic_user_client):
     trucks = TruckFactory.create_batch(3, is_confirmed=True)
     TruckFactory.create_batch(3, is_confirmed=False)
-    url = reverse("api:truck-list")
+    url = reverse("v1:truck-list")
 
     # anonymous
     response = APIClient().get(url)
@@ -52,7 +51,7 @@ def test_viewset_trucklist_queries_GET(base_setup, basic_user_client):
     )
     assert Truck.objects.count() == 3
 
-    url = reverse("api:truck-list")
+    url = reverse("v1:truck-list")
     # name
     response = basic_user_client.get(url, {"name": "heav"})
     truck_dict = TruckSerializer(instance=truck_name).data
@@ -91,7 +90,7 @@ def test_viewset_trucklist_queries_GET(base_setup, basic_user_client):
 @pytest.mark.django_db
 def test_viewset_truckdetail_GET(basic_user_client):
     truck = TruckFactory(is_confirmed=True)
-    url = reverse("api:truck-detail", args=[truck.id])
+    url = reverse("v1:truck-detail", args=[truck.id])
 
     # anonymous
     response = APIClient().get(url)
@@ -119,7 +118,7 @@ def test_viewset_trucklist_POST(basic_user_client, owner_user_client):
         "city": "Warsaw",
         "page_url": "https://www.uczsieit.pl",
     }
-    url = reverse("api:truck-list")
+    url = reverse("v1:truck-list")
 
     # anonymous
     response = APIClient().post(url, data)
@@ -152,7 +151,7 @@ def test_viewset_truckdetail_PUT(
 ):
     truck = TruckFactory(owner=owner_user, is_confirmed=True)
     data = {"name": "Odyssey", "description": "Yeah", "city": "Warsaw"}
-    url = reverse("api:truck-detail", args=[truck.id])
+    url = reverse("v1:truck-detail", args=[truck.id])
 
     # not owner
     owner_group = Group.objects.get(name="Owners")
@@ -177,7 +176,7 @@ def test_viewset_truckdetail_DELETE(
     basic_user_client, basic_user, owner_user_client, owner_user
 ):
     truck = TruckFactory(owner=owner_user, is_confirmed=True)
-    url = reverse("api:truck-detail", args=[truck.id])
+    url = reverse("v1:truck-detail", args=[truck.id])
 
     # not owner
     owner_group = Group.objects.get(name="Owners")
@@ -202,7 +201,7 @@ def test_viewset_truckdetail_LOCATION_POST(
 ):
     truck = TruckFactory(owner=owner_user, is_confirmed=True)
     data = {"street": "Mazowiecka 12", "zip_code": "03-111"}
-    url = reverse("api:truck-location", args=[truck.id])
+    url = reverse("v1:truck-location", args=[truck.id])
 
     # not owner
     owner_group = Group.objects.get(name="Owners")
@@ -228,10 +227,10 @@ def test_viewset_truckdetail_LOCATION_POST(
 def test_viewset_trucklist_MINE_GET(
     basic_user_client, basic_user, owner_user_client, owner_user
 ):
-    truck = TruckFactory(owner=owner_user)
+    truck = TruckFactory(owner=owner_user, is_confirmed=True)
     owner_group = Group.objects.get(name="Owners")
     owner_group.user_set.add(basic_user)
-    url = reverse("api:truck-mine")
+    url = reverse("v1:truck-mine")
 
     # owner
     response = owner_user_client.get(url)
@@ -250,8 +249,8 @@ def test_viewset_trucklist_MINE_GET(
 
 @pytest.mark.django_db
 def test_viewset_trucklist_OPENS_GET(basic_user_client, basic_user):
-    truck_open = TruckFactory(name="Truczek")
-    truck_closed = TruckFactory()
+    truck_open = TruckFactory(name="Truczek", is_confirmed=True)
+    truck_closed = TruckFactory(is_confirmed=True)
     LocationFactory(
         truck=truck_open,
         open_from=datetime.time(6),
@@ -262,7 +261,7 @@ def test_viewset_trucklist_OPENS_GET(basic_user_client, basic_user):
         open_from=datetime.time(10),
         closed_at=datetime.time(16),
     )
-    url = reverse("api:truck-opens")
+    url = reverse("v1:truck-opens")
 
     # both open
     freezer = freeze_time("2021-02-02 12:00:01")

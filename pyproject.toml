@@ -4,7 +4,6 @@ source = ['street_food_api']
 omit = [
   '*/migrations/*',
   '*/manage.py',
-  '*/tests/*',
   '*/asgi.py',
   '*/wsgi.py',
   '*/settings/*',

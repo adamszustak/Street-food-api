@@ -1,9 +1,6 @@
 import re
 
-from django.conf import settings
-from rest_framework import serializers, validators
-
-from trucks.models import Truck
+from rest_framework import serializers
 
 from .models import Location
 

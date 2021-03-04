@@ -19,6 +19,7 @@ The project uses PostgreSQL as default database.
   - [For Basic Users](#for-basic-users)
     - [Get all trucks](#get-all-trucks)
     - [Get open trucks](#get-open-trucks)
+    - [Allowed parameters](#allowed-parameters)
     - [Get a single truck](#get-a-single-truck)
   - [For Truck Owners](#for-truck-owners)
     - [Create a new Truck](#create-a-new-truck)
@@ -94,14 +95,6 @@ Each user can make 2 POST requests per minute and 10 GET requests per minute.
 #### Get all trucks
 
 Return a list of all accepted by administrators Trucks
-
-- Available query parameters
-
-| Query     | Data type | Description                                    | Lookup    |
-| --------- | --------- | ---------------------------------------------- | --------- |
-| `name`    | string    | Filtering by food truck name (e.g 'HeavenHam') | icontains |
-| `city`    | string    | Filtering by city (e.g 'HeavenHam')            | icontains |
-| `payment` | string    | Filtering by available payment (e.g 'cash')    | iexact    |
 
 #### Example
 
@@ -215,6 +208,16 @@ GET http://127.0.0.1:8000/api/trucks/1/
     "location": null
 }
 ```
+
+### Allowed parameters
+
+| Query     | Data type | Description                                    | Lookup    |
+| --------- | --------- | ---------------------------------------------- | --------- |
+| `name`    | string    | Filtering by food truck name (e.g 'HeavenHam') | icontains |
+| `city`    | string    | Filtering by city (e.g 'HeavenHam')            | icontains |
+| `payment` | string    | Filtering by available payment (e.g 'cash')    | iexact    |
+
+It can be combained with **open** and **main** endpoints.
 
 ### For Truck Owners
 

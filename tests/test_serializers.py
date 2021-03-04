@@ -1,15 +1,14 @@
 from unittest.mock import Mock
 
 import pytest
-from django.conf import settings
 from django.http import QueryDict
 from rest_framework import serializers
 from rest_framework.test import APIRequestFactory
 
 from locations.models import Location
 from locations.serializers import LocationSerializer
-from trucks.models import PaymentMethod, Truck, TruckImage
-from trucks.serializers import TruckImageSerializer, TruckSerializer
+from trucks.models import Truck, TruckImage
+from trucks.serializers import TruckSerializer
 
 from .factories import TruckFactory, UserFactory, small_gif
 
@@ -95,7 +94,7 @@ def test_payments_validation_truckserializer_pass(base_setup, payment):
 
 
 @pytest.mark.django_db
-def test_image_saving_truckserializer():
+def test_image_saving_truckserializer(transaction=True):
     # create
     data = {"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     mock_view = Mock()
