@@ -19,7 +19,6 @@ CACHES = {
         "KEY_PREFIX": "cache",
     }
 }
-
 ##### TO IMPLEMENT #####
 
 # SECURE_REFERRER_POLICY = 'same-origin'

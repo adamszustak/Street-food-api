@@ -2,8 +2,6 @@ import datetime
 
 from django.db import transaction
 from django.db.models import Q
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -26,7 +24,7 @@ class TruckViewSet(viewsets.ModelViewSet):
         permissions.DjangoModelPermissions,
         IsOwnerOrReadOnly,
     )
-    throttle_classes = [UserPostRateThrottle, UserGetRateThrottle]
+    throttle_classes = (UserGetRateThrottle, UserPostRateThrottle)
 
     def _get_images(self, request):
         for img in request.data.getlist("image"):
@@ -46,10 +44,6 @@ class TruckViewSet(viewsets.ModelViewSet):
             self._get_images(request)
         return super(TruckViewSet, self).update(request, *args, **kwargs)
 
-    @method_decorator(cache_page(60 * 60))
-    def dispatch(self, request, *args, **kwargs):
-        return super().dispatch(request, *args, **kwargs)
-
     @action(detail=False, methods=["get"])
     def mine(self, request):
         trucks = (
@@ -57,8 +51,6 @@ class TruckViewSet(viewsets.ModelViewSet):
             .filter(owner=request.user)
             .order_by("-updated")
         )
-        for truck in trucks:
-            print(truck.city)
         page = self.paginate_queryset(trucks)
         if page is not None:
             serializer = self.get_serializer(page, many=True)
