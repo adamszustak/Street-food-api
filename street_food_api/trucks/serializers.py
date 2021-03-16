@@ -95,7 +95,7 @@ class TruckSerializer(serializers.ModelSerializer):
                 instance.images.all().delete()
             for image_data in data.getlist("image"):
                 TruckImage.objects.create(truck=instance, image=image_data)
-        if method == "PUT" or method == "PATCH" and new_payments:
+        if method in ("PUT", "PATCH") and new_payments:
             instance.payment_methods.clear()
         instance.payment_methods.add(*new_payments)
         return super(TruckSerializer, self).update(instance, validated_data)

@@ -28,7 +28,6 @@ def test_unique_validation_truckserializer():
     "payment", ["casssh", "debit card, credit c", "debbit carrd, cash"]
 )
 def test_payments_validation_truckserializer_fail(base_setup, payment):
-    # create
     data = {"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     mock_view = Mock()
     mock_view.request = APIRequestFactory().request()
@@ -44,8 +43,7 @@ def test_payments_validation_truckserializer_fail(base_setup, payment):
 @pytest.mark.parametrize(
     "payment", ["cash", "debit card, credit card, cash, by phone", ""]
 )
-def test_payments_validation_truckserializer_pass(base_setup, payment):
-    # create
+def test_payments_validation_truckserializer_pass_create(base_setup, payment):
     data = {"name": "HamBug", "description": "Desc", "city": "Warsaw"}
     mock_view = Mock()
     mock_view.request = APIRequestFactory().request()
@@ -175,7 +173,7 @@ def test_coordinates_validation_locationserializer_pass(latitude, longitude):
 
 
 @pytest.mark.django_db
-def test_location_saving_locationserializer(db):
+def test_location_saving_locationserializer_create(db):
     # create
     truck = TruckFactory()
     data = {"street": "Mazowiecka", "zip_code": "03-411"}
